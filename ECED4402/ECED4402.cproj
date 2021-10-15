@@ -5,7 +5,7 @@
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
     <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
-    <avrdevice>ATSAMD20J18</avrdevice>
+    <avrdevice>ATSAMD20G18</avrdevice>
     <avrdeviceseries>samd20</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -20,10 +20,10 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <ResetRule>0</ResetRule>
     <eraseonlaunchrule>0</eraseonlaunchrule>
@@ -33,15 +33,16 @@
   <options>
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.freertos.dbg_print" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam0.drivers.port" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="thirdparty.os.freertos.version" value="Add" config="10.0.0" content-id="Atmel.ASF" />
     <option id="common.services.freertos.dbg_print.quick_start" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.utils" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam0.drivers.port" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam0.utils.cmsis.samd20.source.template" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="thirdparty.os.freertos.version" value="Add" config="10.0.0" content-id="Atmel.ASF" />
   </options>
   <configurations>
-    <configuration key="config.thirdparty.os.freertos-10_0_0.memory_manager" value="1_static_allocation" default="1_static_allocation" content-id="Atmel.ASF" />
+    <configuration key="config.thirdparty.os.freertos-10_0_0.memory_manager" value="4_first_fit_coallesce" default="1_static_allocation" content-id="Atmel.ASF" />
     <configuration key="config.thirdparty.os.freertos.version" value="10.0.0" default="10.0.0" content-id="Atmel.ASF" />
+    <configuration key="config.sam0.drivers.sercom.usart" value="callback" default="callback" content-id="Atmel.ASF" />
   </configurations>
   <files>
     <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
@@ -238,7 +239,6 @@
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/list.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/list.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/portable/GCC/ARM_CM0/port.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/portable/GCC/ARM_CM0/port.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/portable/GCC/ARM_CM0/portmacro.h" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/portable/GCC/ARM_CM0/portmacro.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/portable/MemMang/heap_1.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/portable/MemMang/heap_1.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/portable/readme.txt" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/portable/readme.txt" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/queue.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/queue.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/readme.txt" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/readme.txt" changed="False" content-id="Atmel.ASF" />
@@ -246,6 +246,7 @@
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/tasks.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/tasks.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/timers.c" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/Source/timers.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/readme.txt" framework="" version="" source="thirdparty/freertos/freertos-10.0.0/readme.txt" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/freertos/freertos-10.0.0/Source/portable/MemMang/heap_4.c" framework="" version="3.49.1" source="thirdparty\freertos\freertos-10.0.0\Source\portable\MemMang\heap_4.c" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="" />
   <offline-documentation help="" />
@@ -256,6 +257,22 @@
   <board id="board.samd20_xplained_pro" value="Add" config="" content-id="Atmel.ASF" />
 </framework-data>
     </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
+    <avrtoolserialnumber>J42700045508</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x10001405</avrdeviceexpectedsignature>
+    <avrtoolinterface>SWD</avrtoolinterface>
+    <com_atmel_avrdbg_tool_atmelice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <SwdClock>2000000</SwdClock>
+        </InterfaceProperties>
+        <InterfaceName>SWD</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
+      <ToolNumber>J42700045508</ToolNumber>
+      <ToolName>Atmel-ICE</ToolName>
+    </com_atmel_avrdbg_tool_atmelice>
+    <avrtoolinterfaceclock>2000000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -603,10 +620,12 @@
     <Folder Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\" />
     <Folder Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\GCC\" />
     <Folder Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\GCC\ARM_CM0\" />
-    <Folder Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\MemMang\" />
     <Folder Include="src\config\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\MemMang\heap_4.c">
+      <SubType>compile</SubType>
+    </Compile>
     <None Include="src\asf.h">
       <SubType>compile</SubType>
     </None>
@@ -1190,9 +1209,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\GCC\ARM_CM0\port.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\portable\MemMang\heap_1.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\thirdparty\freertos\freertos-10.0.0\Source\queue.c">

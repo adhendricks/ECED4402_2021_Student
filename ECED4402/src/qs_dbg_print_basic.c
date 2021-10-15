@@ -36,52 +36,80 @@
 
 #include <asf.h>
 
-//! [main_task_data]
 uint32_t main_counter;
 char main_string[] = "Main task iteration: 0x00000000\r\n";
-//! [main_task_data]
 
-//! [main_task]
-//! [main_task_open]
+static void PrintTaskID(void*params);
+static void main_task(void *params);
+
 static void main_task(void *params)
 {
+	char ibuff[50];
+	int taskcount = 0;
+	TaskHandle_t xHandle[50];
+	
+	size_t val;
 	do {
-//! [main_task_open]
-//! [main_task_1]
-		dbg_print_str("Main task loop executing\r\n");
-//! [main_task_1]
+		dbg_print_str("Main task loop executing ");
 
-//! [main_task_2]
 		// Update hexadecimal 32-bit integer in string, and print it
 		dbg_sprint_hexint(&main_string[23], main_counter++);
+		sprintf(main_string,"%ld \r\n",main_counter);
 		dbg_print_str(main_string);
-//! [main_task_2]
 
-//! [main_task_close]
+		if(port_pin_get_input_level(BUTTON_0_PIN) == BUTTON_0_ACTIVE){
+			if (xTaskCreate(&PrintTaskID,(const char*)"subtask",configMINIMAL_STACK_SIZE+100,(void *) taskcount,tskIDLE_PRIORITY+2,&xHandle[taskcount])!=pdPASS){
+				sprintf(ibuff,"Failed creating new task %d \r\n",taskcount);
+				dbg_print_str(ibuff);
+				}else{
+				sprintf(ibuff,"Created a new task %d \r\n",taskcount++);
+				dbg_print_str(ibuff);
+			}
+			}else if(port_pin_get_input_level(PIN_PA16) == BUTTON_0_ACTIVE && taskcount >0){
+			taskcount--;
+			vTaskDelete(xHandle[taskcount]);
+			sprintf(ibuff,"Deleted task new task %d \r\n",taskcount);
+			dbg_print_str(ibuff);
+		}
+		val = xPortGetFreeHeapSize() ;
+		sprintf(ibuff,"Size = %d Bytes\r\n",val);
+		dbg_print_str(ibuff);
+
 		vTaskDelay(1000 / portTICK_RATE_MS);
 	} while(1);
 }
-//! [main_task_close]
-//! [main_task]
 
+static void PrintTaskID(void*params){
+	char ibuff[50];
+	do{
+		sprintf(ibuff,"Task %d printing \r\n",(int) params);
+		dbg_print_str(ibuff);
+		
+		vTaskDelay(1000);
+	}while(1);
+}
 
 int main (void)
 {
-//! [init_calls]
+	//! [init_calls]
 	system_init();
 	dbg_init();
-//! [init_calls]
+	
+	struct port_config pin_conf;
+	port_get_config_defaults(&pin_conf);
 
-//! [main_task_create]
+	//Configure button 2
+	/* Set buttons as inputs */
+	pin_conf.direction  = PORT_PIN_DIR_INPUT;
+	pin_conf.input_pull = PORT_PIN_PULL_UP;
+	port_pin_set_config(PIN_PA16, &pin_conf);
+	
 	xTaskCreate(&main_task,
-		(const char *)"Main task",
-		configMINIMAL_STACK_SIZE + 100,
-		NULL,
-		tskIDLE_PRIORITY + 2,
-		NULL);
-//! [main_task_create]
+	(const char *)"Main task",
+	configMINIMAL_STACK_SIZE + 100,
+	NULL,
+	tskIDLE_PRIORITY + 2,
+	NULL);
 
-//! [freertos_start]
 	vTaskStartScheduler();
-//! [freertos_start]
 }
